@@ -1,0 +1,15 @@
+type: choice
+is_multiple_choice: true
+options:
+    -   text: A
+    -   text: B
+    -   text: C
+    -   text: All objects are created incorrectly
+files:
+    -   name: main.js
+        visible: true
+        learner_created: false
+feedback_link: https://hyperskill.org/learn/step/8718#comment
+status: Solved
+record: -1
+local_check: false

@@ -1,0 +1,14 @@
+type: code
+custom_name: "Counting on Redux: A State Management Adventure"
+files:
+    -   name: main.js
+        visible: true
+        highlight_level: NONE
+        learner_created: false
+feedback_link: https://hyperskill.org/learn/step/48080#comment
+status: Solved
+feedback:
+    message: <html>Correct solution</html>
+    time: "Tue, 10 Sep 2024 08:35:14 UTC"
+record: -1
+submission_language: javascript

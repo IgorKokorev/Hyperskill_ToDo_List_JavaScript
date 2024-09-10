@@ -1,0 +1,16 @@
+type: choice
+is_multiple_choice: true
+options:
+    -   text: find()
+    -   text: findIndex()
+    -   text: includes()
+    -   text: indexOf()
+    -   text: lastIndexOf()
+files:
+    -   name: main.js
+        visible: true
+        learner_created: false
+feedback_link: https://hyperskill.org/learn/step/18268#comment
+status: Solved
+record: -1
+local_check: false

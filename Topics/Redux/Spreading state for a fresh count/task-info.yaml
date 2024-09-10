@@ -1,0 +1,16 @@
+type: choice
+is_multiple_choice: false
+options:
+    -   text: Merges the action object with state
+    -   text: Enables time-travel debugging
+    -   text: Mutates the existing state object
+    -   text: Removes properties from the state
+    -   text: Creates a new object for immutability
+files:
+    -   name: main.js
+        visible: true
+        learner_created: false
+feedback_link: https://hyperskill.org/learn/step/48069#comment
+status: Solved
+record: -1
+local_check: false

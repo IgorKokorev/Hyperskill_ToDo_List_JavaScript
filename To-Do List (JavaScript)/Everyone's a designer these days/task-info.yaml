@@ -1,0 +1,14 @@
+type: edu
+files:
+    -   name: src/index.html
+        visible: true
+        learner_created: false
+    -   name: test/test.js
+        visible: false
+        learner_created: false
+feedback_link: https://hyperskill.org/projects/183/stages/927/implement#comment
+status: Solved
+feedback:
+    message: Congratulations!
+    time: "Tue, 10 Sep 2024 08:53:48 UTC"
+record: 1

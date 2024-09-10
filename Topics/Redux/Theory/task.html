@@ -1,0 +1,107 @@
+<div class="step-text">
+<p><strong>Redux</strong> is a popular state management library that helps you manage the state of your JavaScript applications in a predictable and centralized way. It provides a clear structure for managing the state, making it easier to understand how data flows through your application. It is also pretty small, about 2kb so your build won't be that much bigger.</p><p>In this topic, you'll learn about the core concepts of Redux, including actions, reducers, and store. You'll also discover how to integrate Redux with React, implement advanced Redux techniques, and follow best practices for structuring your Redux code.</p><h5 id="redux-core-concepts">Redux Core Concepts</h5><p>At the heart of Redux are three fundamental concepts: actions, reducers, and store. Let's dive into each of these concepts and see how they work together to manage the state of your application.</p><p><strong>Actions</strong> are plain JavaScript objects that describe what happened in your application. A good way to think of an action is that it is an event that describes something that occurs in the application. They are the only way to trigger state changes in Redux. An action must have a <code class="language-javascript">type</code> property that indicates the type of action being performed.</p><p>An action can also have additional fields that describe the event. By convention, these are put under the <code class="language-javascript">payload</code> field.</p><p>Here is an example of an action:</p><pre><code class="language-javascript">const addTodo = {
+    type: 'ADD_TODO',
+    payload: {
+        id: 1,
+        text: 'Learn Redux'
+    }
+}</code></pre><p><strong>Reducers</strong> are pure functions that specify how the state should change in response to actions. They must be pure functions.</p><p>Pure functions always produce the same output for the same input and do not modify external state or cause side effects. Reducers take the current state and an action as input and return a new state. The action is used to determine how to calculate the new state. Remember, they should not modify the existing state directly, but instead return a new state object.</p><p>Here's an example of a reducer that is used to manage state of an array:</p><pre><code class="language-javascript">const todoReducer = (state = { list: [] }, action) =&gt; {
+    switch (action.type) {
+        case 'ADD_TODO':
+            // Adds a new todo item to the list in the state
+            return { list: [...state.list, action.payload] };
+        default:
+            // Returns the current state if no action type matches
+            return state;
+    }
+};
+</code></pre><p>The <code class="language-javascript">todoReducer</code> function is a Redux reducer that handles state updates for managing a list of todo items. When an action with type 'ADD_TODO' is dispatched, it adds a new todo item to the list in the state by creating a new state object with the updated list. If the action type does not match, it returns the current state unchanged.</p><p>The <strong>store</strong> is the object that holds the application state and provides methods to access and update the state. It is created by passing a reducer to the <code class="language-javascript">createStore</code> function from the Redux library. The function takes a reducer object as a parameter. The store has methods like <code class="language-javascript">getState()</code> to retrieve the current state, <code class="language-javascript">dispatch(action)</code> to dispatch actions, and <code class="language-javascript">subscribe(listener)</code> to register listeners for state changes.</p><pre><code class="language-javascript">const store = createStore(reducer)
+
+// To retrieve state
+let state = store.getState()
+
+// To dispatch an event
+store.dispatch({ type: 'INCRIMENT' })</code></pre><p>The only way to change state is to call the dispatch method and pass an action to it. The store will run the reducer function and save the new state. We can then run a method like <code class="language-javascript">getState()</code> to get the new state value.</p><h5 id="integrating-redux-with-react">Integrating Redux with React</h5><p>To use Redux with React, you need to set up a Redux store and connect it to your React components. The <code class="language-javascript">react-redux</code> library provides a convenient way to do this. Here is an example that uses Redux to keep track of a to-do list.</p><p>Before anything, we should install the right packages. For this example, we can use <strong>Redux Toolkit</strong> since it's built on top of Redux but with a better developer experience. We will also install a React plugin for Redux.</p><pre><code class="language-shell">npm i @reduxjs/toolkit react-redux</code></pre><p>It is important to design the structure of your application's state and define action types as string constants before delving into the code. For example 'ADD_TODO' and 'REMOVE_TODO'</p><p>First things first, we need to create the reducer. To do this, we will use the <code class="language-javascript">createSlice</code> function from <code class="language-javascript">@reduxjs/toolkit</code> to generate a slice. The slice is an object with a reducer as one of its fields.</p><pre><code class="language-javascript">import { createSlice } from "@reduxjs/toolkit"
+
+const todoSclice = createSlice({
+  name: 'todo',
+  initialState: {
+    list: []
+  },
+  reducers: {
+    // Increment reducer
+    addToTodo: (state, item) =&gt; {
+      let newTodo = [...state.list, item]
+      return newTodo
+    },
+    removeFromTodo: (state, item) =&gt; {
+      let newTodo = state.filter(todo =&gt; JSON.stringify(item) === JSON.stringify(todo))
+      return newTodo
+    }
+});
+
+export default todoSlice.reducer;</code></pre><div class="alert alert-primary"><p><strong>Redux toolkit</strong> allows us to write mutating logic in the reducer. It doesn't mutate the state but returns a brand new immutable state based on the changes.</p><pre><code class="language-javascript">increment: (state) =&gt; {
+  state.value += 1
+},</code></pre></div><p>Next, create a Redux store using the <code class="language-javascript">createStore</code> function and pass your root reducer to it. The function also takes two additional optional parameters <code class="language-javascript">initialState</code> and an <code class="language-javascript">enhancer</code>. The enhancer is a higher-order function that takes <code class="language-javascript">storeCreator</code> and returns a new, more enhanced <code class="language-javascript">storeCreator</code>.</p><div class="alert alert-primary"><p>To read more about enhancers, visit <a href="https://redux.js.org/understanding/thinking-in-redux/glossary#store-enhancer" rel="noopener noreferrer nofollow" target="_blank">here</a>.</p></div><p>Then, wrap your React application with the <code class="language-javascript">Provider</code> component from <code class="language-javascript">react-redux</code> and pass the store as a prop:</p><pre><code class="language-javascript">import { createStore } from 'redux';
+import { Provider } from 'react-redux';
+import rootReducer from './reducers';
+
+const store = createStore(rootReducer);
+
+ReactDOM.render(
+    &lt;Provider store={store}&gt;
+        &lt;App /&gt;
+    &lt;/Provider&gt;,
+    document.getElementById('root')
+);</code></pre><p>To connect a React component to the Redux store, use the <code class="language-javascript">connect</code> function from <code class="language-javascript">react-redux</code>. It allows you to specify which parts of the state your component needs access to (<code class="language-javascript">mapStateToProps</code>) and which actions it can dispatch (<code class="language-javascript">mapDispatchToProps</code>). The example below connects a component called <code class="language-javascript">TodoList</code> to the to-do list state we mentioned before.</p><pre><code class="language-javascript">import { connect } from 'react-redux';
+
+const TodoList = ({ todos, addTodo }) =&gt; {
+  return (
+    &lt;div&gt;
+     &lt;ul&gt;
+       {todos.map(item =&gt; {
+         // Loop to show data
+       })}
+     &lt;/ul&gt;
+     &lt;form&gt;
+       // Input
+       &lt;button onClick={addTodo}&gt;Add&lt;/button&gt;
+     &lt;/form&gt;
+    &lt;/div&gt;
+  )
+}
+
+const mapStateToProps = (state) =&gt; ({
+    todos: state.todos
+});
+
+const mapDispatchToProps = (dispatch) =&gt; ({
+    addTodo: (text) =&gt; dispatch({ type: 'ADD_TODO', payload: text })
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(TodoList);</code></pre><h5 id="advanced-redux-techniques">Advanced Redux Techniques</h5><p>Redux offers several advanced techniques to enhance your state management capabilities for your application:</p><ul><li><p><strong>Middleware:</strong></p></li></ul><p>Middleware allows you to intercept, modify, or enhance actions before they reach the reducer. It's useful for logging, handling asynchronous actions, or modifying the action payload. Here's an example of a simple logging middleware:</p><pre><code class="language-javascript">const loggingMiddleware = (store) =&gt; (next) =&gt; (action) =&gt; {
+    console.log('Action:', action);
+    return next(action);
+};</code></pre><p>To use the middleware, you can call the <code class="language-javascript">applyMiddleware</code> function from Redux. You can pass middleware to the function. The function also accepts more than one argument.</p><pre><code class="language-javascript">const logger = applyMiddleware(loggerMiddleware)</code></pre><p>And you can use them as in the example below:</p><pre><code class="language-javascript">const store = createStore(reducer, applyMiddleware(logger, delay))
+
+// Additional code
+store.dispatch({ type: "INCREMENT" })</code></pre><p>During dispatching an event, middleware functions are executed before the dispatched event. If you think about it, they sort of work the same way as middleware in Express.</p><ul><li><p><strong>Asynchronous Actions:</strong></p></li></ul><p>Redux Thunk is a popular middleware that enables you to write action creators that return functions instead of objects. This allows you to perform asynchronous operations, such as making API requests, and dispatch actions based on the results.</p><p>To do this, you must first install Redux Thunk.</p><pre><code class="language-shell">npm i redux-thunk</code></pre><p>Here's an example of an asynchronous action using Redux Thunk that fetches to-dos from an API:</p><pre><code class="language-javascript">const fetchTodos = () =&gt; {
+    return (dispatch) =&gt; {
+        dispatch({ type: 'FETCH_TODOS_REQUEST' });
+        fetch('https://api.example.com/todos')
+            .then((response) =&gt; response.json())
+            .then((data) =&gt; {
+                dispatch({ type: 'FETCH_TODOS_SUCCESS', payload: data });
+            })
+            .catch((error) =&gt; {
+                dispatch({ type: 'FETCH_TODOS_FAILURE', error });
+            });
+    };
+};</code></pre><ul><li><p><strong>Selectors:</strong></p></li></ul><p>Selectors are functions that extract specific pieces of state from the Redux store. They help optimize performance by memoizing the results and only recomputing them when the relevant parts of the state change. Selectors can be used with libraries like <code class="language-javascript">Reselect</code> to create efficient and composable state selectors.</p><pre><code class="language-javascript">import { createSelector } from 'reselect';
+
+const getTodos = (state) =&gt; state.todos;
+const getCompletedTodos = createSelector(
+    getTodos,
+    (todos) =&gt; todos.filter((todo) =&gt; todo.completed)
+);</code></pre><h5 id="redux-best-practices">Redux Best Practices</h5><p>When working with Redux, it's important to follow best practices to keep your code maintainable and scalable:</p><ul><li><p><strong>Normalize your state:</strong> Normalizing state means storing data in a flat, keyed structure instead of nested objects. This helps avoid duplication, makes updates more efficient, and simplifies data access. Libraries like normalizer can assist with this.</p></li><li><p><strong>Use action constants</strong>: Define action types as constants to avoid typos and make your code more readable.</p></li><li><p><strong>Keep reducers pure</strong>: Ensure that reducers are pure functions and don't modify the state directly. Mutating state is one of the leading causes of Redux bugs.</p></li><li><p><strong>Use selectors</strong>: Utilize selectors to compute derived data and keep your components lean.</p></li><li><p><strong>Organize your files</strong>: Structure your Redux files in a logical manner, separating actions, reducers, and selectors.</p></li></ul><h5 id="conclusion">Conclusion</h5><p>By understanding the core concepts of Redux: actions, reducers, and store, you can effectively manage the state of your application.</p><p>Integrating Redux with React allows you to connect your components to the Redux store and efficiently manage the flow of data. Advanced techniques like middleware, asynchronous actions, and selectors further enhance the capabilities of Redux.</p><p>To make the most of Redux, remember to follow best practices, keep your code organized, and use the tools and techniques available in the Redux ecosystem. With Redux, you can build scalable and maintainable applications that are easier to understand and debug.</p><p>Now it's time to put your Redux knowledge into practice and start building amazing applications!</p>
+</div>
